@@ -1,6 +1,6 @@
 package com.challenge.pricing.service.infrastructure.persistence;
 
-import com.challenge.pricing.service.application.port.out.UserRepositoryPort;
+import com.challenge.pricing.service.application.port.out.PriceRepositoryPort;
 import com.challenge.pricing.service.domain.model.Price;
 import com.challenge.pricing.service.infrastructure.mapper.PriceMapper;
 import org.springframework.stereotype.Repository;
@@ -10,12 +10,12 @@ import java.time.ZoneId;
 import java.util.List;
 
 @Repository
-public class JpaUserRepositoryAdapter implements UserRepositoryPort {
+public class JpaPriceRepositoryAdapter implements PriceRepositoryPort {
 
     private final PriceDao priceDao;
     private final PriceMapper priceMapper;
 
-    public JpaUserRepositoryAdapter(PriceDao priceDao, PriceMapper priceMapper) {
+    public JpaPriceRepositoryAdapter(PriceDao priceDao, PriceMapper priceMapper) {
         this.priceDao = priceDao;
         this.priceMapper = priceMapper;
     }

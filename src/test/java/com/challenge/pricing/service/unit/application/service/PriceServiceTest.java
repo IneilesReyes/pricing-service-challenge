@@ -2,7 +2,7 @@ package com.challenge.pricing.service.unit.application.service;
 
 import com.challenge.pricing.service.application.exception.RepositoryException;
 import com.challenge.pricing.service.application.exception.ResourceNotFoundException;
-import com.challenge.pricing.service.application.port.out.UserRepositoryPort;
+import com.challenge.pricing.service.application.port.out.PriceRepositoryPort;
 import com.challenge.pricing.service.application.service.PriceService;
 import com.challenge.pricing.service.domain.service.PriceSelector;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +25,7 @@ class PriceServiceTest {
     private PriceService priceService;
 
     @Mock
-    private UserRepositoryPort userRepositoryPort;
+    private PriceRepositoryPort priceRepositoryPort;
 
     @Mock
     private PriceSelector priceSelectorMock;
@@ -37,7 +37,7 @@ class PriceServiceTest {
         Long brandId = 1L;
         LocalDateTime applicationDate = LocalDateTime.of(2020, 6, 14, 21, 0);
 
-        when(userRepositoryPort.findPricebyProductIdBrandIdAndDate(productId, brandId, applicationDate)).thenReturn(Collections.emptyList());
+        when(priceRepositoryPort.findPricebyProductIdBrandIdAndDate(productId, brandId, applicationDate)).thenReturn(Collections.emptyList());
         when(priceSelectorMock.getAppliedPrice(Collections.emptyList())).thenThrow(new IllegalArgumentException());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
@@ -45,7 +45,7 @@ class PriceServiceTest {
         });
 
         assertTrue(exception.getMessage().contains("There are no prices found"));
-        verify(userRepositoryPort, times(1)).findPricebyProductIdBrandIdAndDate(productId, brandId, applicationDate);
+        verify(priceRepositoryPort, times(1)).findPricebyProductIdBrandIdAndDate(productId, brandId, applicationDate);
         verify(priceSelectorMock, times(1)).getAppliedPrice(Collections.emptyList());
     }
 
@@ -58,7 +58,7 @@ class PriceServiceTest {
         String errorMessage = "Simulated DB error";
         String expectedMessage = "Encountered error while retrieving prices - productId: %s - brandId: %s - date: %s - error: %s".formatted(productId, brandId, applicationDate, errorMessage);
 
-        when(userRepositoryPort.findPricebyProductIdBrandIdAndDate(productId, brandId, applicationDate))
+        when(priceRepositoryPort.findPricebyProductIdBrandIdAndDate(productId, brandId, applicationDate))
                 .thenThrow(new RuntimeException(errorMessage));
 
         RepositoryException exception = assertThrows(RepositoryException.class, () -> {
@@ -66,7 +66,7 @@ class PriceServiceTest {
         });
 
         assertEquals(expectedMessage, exception.getMessage());
-        verify(userRepositoryPort, times(1)).findPricebyProductIdBrandIdAndDate(productId, brandId, applicationDate);
+        verify(priceRepositoryPort, times(1)).findPricebyProductIdBrandIdAndDate(productId, brandId, applicationDate);
         verify(priceSelectorMock, never()).getAppliedPrice(any());
     }
 }
